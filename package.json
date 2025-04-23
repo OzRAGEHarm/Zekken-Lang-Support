@@ -1,8 +1,18 @@
 {
-  "name": "zekken-lang",
+  "name": "zekken-language-support",
   "displayName": "Zekken Language Support",
   "description": "Zekken Language Support for Visual Studio Code",
   "version": "0.0.1",
+  "publisher": "OzRAGEHarm",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/OzRAGEHarm/Zekken-Lang-Support"
+  },
+  "bugs": {
+    "url": "https://github.com/OzRAGEHarm/Zekken-Lang-Support/issues"
+  },
+  "homepage": "https://github.com/OzRAGEHarm/Zekken-Lang-Support#readme",
   "engines": {
     "vscode": "^1.99.0"
   },

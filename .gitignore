@@ -1,0 +1,5 @@
+zekken-lang-0.0.1.vsix
+.vscode
+.vscodeignore
+node_modules
+*.log
