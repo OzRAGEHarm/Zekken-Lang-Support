@@ -1,0 +1,8 @@
+.vscode/**
+.vscode-test/**
+.gitignore
+vsc-extension-quickstart.md
+README.md
+CHANGELOG.md
+
+!zekken_icon.png

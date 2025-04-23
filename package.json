@@ -1,0 +1,35 @@
+{
+  "name": "zekken-lang",
+  "displayName": "Zekken Language Support",
+  "description": "Zekken Language Support for Visual Studio Code",
+  "version": "0.0.1",
+  "engines": {
+    "vscode": "^1.99.0"
+  },
+  "categories": [
+    "Programming Languages"
+  ],
+  "icon": "zekken_icon.png",
+  "contributes": {
+    "languages": [{
+      "id": "zekken",
+      "aliases": ["Zekken", "zekken"],
+      "extensions": [".zk"],
+      "icon": {
+        "light": "zekken_icon.png",
+        "dark": "zekken_icon.png"
+      },
+      "configuration": "./language-configuration.json"
+    }],
+    "grammars": [{
+      "language": "zekken",
+      "scopeName": "source.zekken",
+      "path": "./syntaxes/zekken.tmLanguage.json"
+    }],
+    "themes": [{
+      "label": "Zekken Color Theme",
+      "uiTheme": "vs-dark",
+      "path": "./themes/zekken-color-theme.json"
+    }]
+  }
+}

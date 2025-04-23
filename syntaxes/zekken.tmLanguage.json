@@ -1,0 +1,218 @@
+{
+  "patterns": [
+    {
+      "name": "comment.line.double-slash.zekken",
+      "match": "//.*$"
+    },
+    {
+      "name": "comment.block.zekken",
+      "begin": "/\\*",
+      "end": "\\*/"
+    },
+
+		{
+      "name": "meta.function.declaration.zekken",
+      "match": "\\b(func)\\s+([a-zA-Z_][a-zA-Z0-9_]*)\\s*\\|",
+      "captures": {
+        "1": { "name": "keyword.other.zekken" },
+        "2": { "name": "entity.name.function.zekken" }
+      }
+    },
+
+    {
+      "name": "meta.function.builtin.zekken", 
+      "match": "@([a-zA-Z_][a-zA-Z0-9_]*)\\s*(=>)",
+      "captures": {
+        "1": { "name": "support.function.builtin.zekken" },
+        "2": { "name": "keyword.operator.zekken" }
+      }
+    },
+
+    {
+      "name": "meta.function.call.zekken",
+      "match": "\\b([a-zA-Z_][a-zA-Z0-9_]*)\\s*(=>)",
+      "captures": {
+        "1": { "name": "entity.name.function.zekken" },
+        "2": { "name": "keyword.operator.zekken" }
+      }
+    },
+
+    {
+      "name": "keyword.control.zekken",
+      "match": "\\b(if|else|for|while|try|catch|return)\\b"
+    },
+
+    {
+      "name": "keyword.other.zekken",
+      "match": "\\b(use|include|export|func|let|const|from|in)\\b"
+    },
+
+		{
+			"name": "storage.type.zekken",
+			"match": "\\b(int|float|bool|string|arr|obj)\\b"
+		},
+
+    {
+      "name": "variable.other.zekken",
+      "match": "\\b[a-zA-Z_][a-zA-Z0-9_]*\\b"
+    },
+
+    {
+      "name": "constant.numeric.integer.zekken",
+      "match": "\\b\\d+\\b"
+    },
+    {
+      "name": "constant.numeric.float.zekken",
+      "match": "\\b\\d+\\.\\d+\\b"
+    },
+    {
+      "name": "constant.language.boolean.zekken",
+      "match": "\\b(true|false)\\b"
+    },
+
+    {
+      "name": "string.quoted.double.zekken",
+      "begin": "\"",
+      "end": "\""
+    },
+    {
+      "name": "string.quoted.single.zekken",
+      "begin": "'",
+      "end": "'"
+    },
+
+    {
+      "name": "meta.array.zekken",
+      "begin": "\\[",
+      "end": "\\]",
+      "patterns": [
+        { "include": "#function-patterns" },
+        { "include": "#key-value-pair" }
+      ]
+    },
+    {
+      "name": "meta.object.zekken",
+      "begin": "\\{",
+      "end": "\\}",
+      "patterns": [
+        { "include": "#function-patterns" },
+        { "include": "#key-value-pair" }
+      ]
+    },
+
+    {
+      "name": "key-value-pair.zekken",
+      "patterns": [
+        {
+          "name": "variable.other.zekken",
+          "match": "\\b[a-zA-Z_][a-zA-Z0-9_]*\\b"
+        },
+        {
+          "name": "constant.language.boolean.zekken",
+          "match": "\\b(true|false)\\b"
+        },
+        {
+          "name": "constant.numeric.integer.zekken",
+          "match": "\\b\\d+\\b"
+        },
+        {
+          "name": "constant.numeric.float.zekken",
+          "match": "\\b\\d+\\.\\d+\\b"
+        },
+        {
+          "name": "string.quoted.double.zekken",
+          "begin": "\"",
+          "end": "\""
+        },
+        {
+          "name": "string.quoted.single.zekken",
+          "begin": "'",
+          "end": "'"
+        }
+      ]
+    },
+
+    {
+      "name": "variable-definition.zekken",
+      "patterns": [
+        {
+          "name": "variable.other.zekken",
+          "match": "\\b[a-zA-Z_][a-zA-Z0-9_]*\\b"
+				},
+        {
+          "name": "storage.type.zekken",
+          "match": "\\b(int|float|bool|string|arr|obj)\\b"
+        }
+      ]
+    }
+  ],
+  "repository": {
+    "variable-definition": {
+      "patterns": [
+        {
+          "name": "variable.other.zekken",
+          "match": "\\b[a-zA-Z_][a-zA-Z0-9_]*\\b"
+        }
+      ]
+    },
+    "key-value-pair": {
+      "patterns": [
+        {
+          "name": "variable.other.zekken",
+          "match": "\\b[a-zA-Z_][a-zA-Z0-9_]*\\b"
+        },
+        {
+          "name": "constant.language.boolean.zekken",
+          "match": "\\b(true|false)\\b"
+        },
+        {
+          "name": "constant.numeric.integer.zekken",
+          "match": "\\b\\d+\\b"
+        },
+        {
+          "name": "constant.numeric.float.zekken",
+          "match": "\\b\\d+\\.\\d+\\b"
+        },
+        {
+          "name": "string.quoted.double.zekken",
+          "begin": "\"",
+          "end": "\""
+        },
+        {
+          "name": "string.quoted.single.zekken",
+          "begin": "'",
+          "end": "'"
+        }
+      ]
+    },
+		"function-patterns": {
+      "patterns": [
+        {
+          "name": "meta.function.declaration.zekken",
+          "match": "\\b(func)\\s+([a-zA-Z_][a-zA-Z0-9_]*)\\s*\\|",
+          "captures": {
+            "1": { "name": "keyword.other.zekken" },
+            "2": { "name": "entity.name.function.zekken" }
+          }
+        },
+        {
+          "name": "meta.function.builtin.zekken",
+          "match": "@([a-zA-Z_][a-zA-Z0-9_]*)\\s*(=>)",
+          "captures": {
+            "1": { "name": "support.function.builtin.zekken" },
+            "2": { "name": "keyword.operator.zekken" }
+          }
+        },
+        {
+          "name": "meta.function.call.zekken",
+          "match": "\\b([a-zA-Z_][a-zA-Z0-9_]*)\\s*(=>)",
+          "captures": {
+            "1": { "name": "entity.name.function.zekken" },
+            "2": { "name": "keyword.operator.zekken" }
+          }
+        }
+      ]
+    }
+  },
+  "scopeName": "source.zekken"
+}
