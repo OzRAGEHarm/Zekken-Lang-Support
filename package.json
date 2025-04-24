@@ -2,7 +2,7 @@
   "name": "zekken-language-support",
   "displayName": "Zekken Language Support",
   "description": "Zekken Language Support for Visual Studio Code",
-  "version": "0.0.2",
+  "version": "0.0.4",
   "publisher": "OzRAGEHarm",
   "license": "MIT",
   "repository": {
@@ -36,10 +36,14 @@
       "scopeName": "source.zekken",
       "path": "./syntaxes/zekken.tmLanguage.json"
     }],
-    "themes": [{
-      "label": "Zekken Color Theme",
-      "uiTheme": "vs-dark",
-      "path": "./themes/zekken-color-theme.json"
+    "configuration": [{
+      "properties": {
+        "tokenColors": {
+          "properties": {
+            "path": "token-colors.json"
+          }
+        }
+      }
     }]
   }
 }

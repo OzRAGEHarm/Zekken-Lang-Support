@@ -1,3 +1,4 @@
 .vscodeignore
 .vscode/
 *.vsix
+dist/

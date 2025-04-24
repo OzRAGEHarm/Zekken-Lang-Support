@@ -1,4 +1,6 @@
 {
+  "$schema": "https://raw.githubusercontent.com/martinring/tmlanguage/master/tmlanguage.json",
+  "fileTypes": ["zk"],
   "patterns": [
     {
       "name": "comment.line.double-slash.zekken",
@@ -20,11 +22,10 @@
     },
 
     {
-      "name": "meta.function.builtin.zekken", 
-      "match": "@([a-zA-Z_][a-zA-Z0-9_]*)\\s*(=>)",
+      "name": "support.function.builtin.zekken",
+      "match": "(?<=@)([a-zA-Z_][a-zA-Z0-9_]*)(?=\\s*=>)",
       "captures": {
-        "1": { "name": "support.function.builtin.zekken" },
-        "2": { "name": "keyword.operator.zekken" }
+        "1": { "name": "keyword.other.zekken" }
       }
     },
 
@@ -48,9 +49,9 @@
     },
 
 		{
-			"name": "storage.type.zekken",
-			"match": "\\b(int|float|bool|string|arr|obj)\\b"
-		},
+      "name": "storage.type.zekken support.type.primitive.zekken",
+      "match": "\\b(int|float|bool|string|arr|obj)\\b"
+    },
 
     {
       "name": "variable.other.zekken",
@@ -86,16 +87,21 @@
       "begin": "\\[",
       "end": "\\]",
       "patterns": [
+        { "include": "#control-flow" },
         { "include": "#function-patterns" },
+        { "include": "support" },
         { "include": "#key-value-pair" }
       ]
     },
+
     {
       "name": "meta.object.zekken",
       "begin": "\\{",
       "end": "\\}",
       "patterns": [
+        { "include": "#control-flow" },
         { "include": "#function-patterns" },
+        { "include": "support" },
         { "include": "#key-value-pair" }
       ]
     },
@@ -147,6 +153,14 @@
     }
   ],
   "repository": {
+    "control-flow": {
+      "patterns": [
+        {
+          "name": "keyword.control.zekken",
+          "match": "\\b(if|else|for|while|try|catch|return)\\b"
+        }
+      ]
+    },
     "variable-definition": {
       "patterns": [
         {
@@ -195,14 +209,15 @@
             "2": { "name": "entity.name.function.zekken" }
           }
         },
+    
         {
-          "name": "meta.function.builtin.zekken",
-          "match": "@([a-zA-Z_][a-zA-Z0-9_]*)\\s*(=>)",
+          "name": "support.function.builtin.zekken",
+          "match": "(?<=@)([a-zA-Z_][a-zA-Z0-9_]*)(?=\\s*=>)",
           "captures": {
-            "1": { "name": "support.function.builtin.zekken" },
-            "2": { "name": "keyword.operator.zekken" }
+            "1": { "name": "keyword.other.zekken" }
           }
         },
+    
         {
           "name": "meta.function.call.zekken",
           "match": "\\b([a-zA-Z_][a-zA-Z0-9_]*)\\s*(=>)",
