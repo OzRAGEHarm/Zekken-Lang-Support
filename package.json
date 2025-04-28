@@ -21,29 +21,43 @@
   ],
   "icon": "zekken_icon.png",
   "contributes": {
-    "languages": [{
-      "id": "zekken",
-      "aliases": ["Zekken", "zekken"],
-      "extensions": [".zk"],
-      "icon": {
-        "light": "zekken_icon.png",
-        "dark": "zekken_icon.png"
-      },
-      "configuration": "./language-configuration.json"
-    }],
-    "grammars": [{
-      "language": "zekken",
-      "scopeName": "source.zekken",
-      "path": "./syntaxes/zekken.tmLanguage.json"
-    }],
-    "configuration": [{
-      "properties": {
-        "tokenColors": {
-          "properties": {
-            "path": "token-colors.json"
+    "languages": [
+      {
+        "id": "zekken",
+        "aliases": [
+          "Zekken",
+          "zekken"
+        ],
+        "extensions": [
+          ".zk"
+        ],
+        "icon": {
+          "light": "zekken_icon.png",
+          "dark": "zekken_icon.png"
+        },
+        "configuration": "./language-configuration.json"
+      }
+    ],
+    "grammars": [
+      {
+        "language": "zekken",
+        "scopeName": "source.zekken",
+        "path": "./syntaxes/zekken.tmLanguage.json"
+      }
+    ],
+    "configuration": [
+      {
+        "properties": {
+          "tokenColors": {
+            "properties": {
+              "path": "token-colors.json"
+            }
           }
         }
       }
-    }]
+    ]
+  },
+  "devDependencies": {
+    "vscode-languageserver": "^9.0.1"
   }
 }
