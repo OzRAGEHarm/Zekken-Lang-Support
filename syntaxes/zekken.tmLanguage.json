@@ -84,12 +84,18 @@
     {
       "name": "string.quoted.double.zekken",
       "begin": "\"",
-      "end": "\""
+      "end": "\"",
+      "patterns": [
+        { "name": "constant.character.escape.zekken", "match": "\\\\[abfnrtv0'\"\\\\]" }
+      ]
     },
     {
       "name": "string.quoted.single.zekken",
       "begin": "'",
-      "end": "'"
+      "end": "'",
+      "patterns": [
+        { "name": "constant.character.escape.zekken", "match": "\\\\[abfnrtv0'\"\\\\]" }
+      ]
     },
 
     {
@@ -97,10 +103,7 @@
       "begin": "\\[",
       "end": "\\]",
       "patterns": [
-        { "include": "#control-flow" },
-        { "include": "#function-patterns" },
-        { "include": "support" },
-        { "include": "#key-value-pair" }
+        { "include": "#main" }
       ]
     },
 
@@ -109,10 +112,7 @@
       "begin": "\\{",
       "end": "\\}",
       "patterns": [
-        { "include": "#control-flow" },
-        { "include": "#function-patterns" },
-        { "include": "support" },
-        { "include": "#key-value-pair" }
+        { "include": "#main" }
       ]
     },
 
@@ -138,12 +138,18 @@
         {
           "name": "string.quoted.double.zekken",
           "begin": "\"",
-          "end": "\""
+          "end": "\"",
+          "patterns": [
+            { "name": "constant.character.escape.zekken", "match": "\\\\[abfnrtv0'\"\\\\]" }
+          ]
         },
         {
           "name": "string.quoted.single.zekken",
           "begin": "'",
-          "end": "'"
+          "end": "'",
+          "patterns": [
+            { "name": "constant.character.escape.zekken", "match": "\\\\[abfnrtv0'\"\\\\]" }
+          ]
         }
       ]
     },
@@ -164,6 +170,89 @@
     }
   ],
   "repository": {
+    "main": {
+      "patterns": [
+        { "include": "#comments" },
+        {
+          "name": "storage.type.zekken support.type.primitive.zekken",
+          "match": "\\b(int|float|bool|string|arr|obj|fn)\\b"
+        },
+        { "include": "#function-patterns" },
+        {
+          "name": "keyword.control.zekken",
+          "match": "\\b(if|else|for|while|try|catch|return)\\b"
+        },
+        {
+          "name": "keyword.other.zekken",
+          "match": "\\b(use|include|export|func|let|const|from|in)\\b"
+        },
+        {
+          "name": "variable.other.zekken",
+          "match": "\\b[a-zA-Z_][a-zA-Z0-9_]*\\b"
+        },
+        {
+          "name": "constant.numeric.integer.zekken",
+          "match": "\\b\\d+\\b"
+        },
+        {
+          "name": "constant.numeric.float.zekken",
+          "match": "\\b\\d+\\.\\d+\\b"
+        },
+        {
+          "name": "constant.language.boolean.zekken",
+          "match": "\\b(true|false)\\b"
+        },
+        {
+          "name": "string.quoted.double.zekken",
+          "begin": "\"",
+          "end": "\"",
+          "patterns": [
+            { "name": "constant.character.escape.zekken", "match": "\\\\[abfnrtv0'\"\\\\]" }
+          ]
+        },
+        {
+          "name": "string.quoted.single.zekken",
+          "begin": "'",
+          "end": "'",
+          "patterns": [
+            { "name": "constant.character.escape.zekken", "match": "\\\\[abfnrtv0'\"\\\\]" }
+          ]
+        },
+        { "include": "#key-value-pair" },
+        { "include": "#variable-definition" }
+      ]
+    },
+    "comments": {
+      "patterns": [
+        { "name": "comment.line.double-slash.zekken", "match": "//.*$" },
+        { "name": "comment.block.zekken", "begin": "/\\*", "end": "\\*/" }
+      ]
+    },
+    "types": {
+      "patterns": [
+        { "name": "storage.type.zekken support.type.primitive.zekken", "match": "\\b(int|float|bool|string|arr|obj|fn)\\b" }
+      ]
+    },
+    "strings": {
+      "patterns": [
+        {
+          "name": "string.quoted.double.zekken",
+          "begin": "\"",
+          "end": "\"",
+          "patterns": [
+            { "name": "constant.character.escape.zekken", "match": "\\\\[abfnrtv0'\"\\\\]" }
+          ]
+        },
+        {
+          "name": "string.quoted.single.zekken",
+          "begin": "'",
+          "end": "'",
+          "patterns": [
+            { "name": "constant.character.escape.zekken", "match": "\\\\[abfnrtv0'\"\\\\]" }
+          ]
+        }
+      ]
+    },
     "control-flow": {
       "patterns": [
         {
@@ -204,12 +293,18 @@
         {
           "name": "string.quoted.double.zekken",
           "begin": "\"",
-          "end": "\""
+          "end": "\"",
+          "patterns": [
+            { "name": "constant.character.escape.zekken", "match": "\\\\[abfnrtv0'\"\\\\]" }
+          ]
         },
         {
           "name": "string.quoted.single.zekken",
           "begin": "'",
-          "end": "'"
+          "end": "'",
+          "patterns": [
+            { "name": "constant.character.escape.zekken", "match": "\\\\[abfnrtv0'\"\\\\]" }
+          ]
         }
       ]
     },
