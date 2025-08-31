@@ -1,3 +1,9 @@
+<div align="center">
+  <picture>
+    <img src="images/Zekken_Lang_Logo.png" alt="Zekken Logo" width="75%"/>
+  </picture>
+</div>
+
 # Zekken Language Support for VS Code Extension
 
 This is an open source Visual Studio Code extension for my programming language [Zekken](https://github.com/OzRAGEHarm/Zekken) to highlight syntax, have linting support for errors and autocomplete (both coming soon)!

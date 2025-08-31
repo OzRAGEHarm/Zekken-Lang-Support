@@ -2,7 +2,7 @@
   "name": "zekken-language-support",
   "displayName": "Zekken Language Support",
   "description": "Zekken Language Support for Visual Studio Code",
-  "version": "0.0.7",
+  "version": "0.0.8",
   "publisher": "OzRAGEHarm",
   "license": "MIT",
   "repository": {
@@ -19,7 +19,7 @@
   "categories": [
     "Programming Languages"
   ],
-  "icon": "zekken_icon.png",
+  "icon": "images/zekken_icon.png",
   "contributes": {
     "languages": [
       {
@@ -32,8 +32,8 @@
           ".zk"
         ],
         "icon": {
-          "light": "zekken_icon.png",
-          "dark": "zekken_icon.png"
+          "light": "images/zekken_icon.png",
+          "dark": "images/zekken_icon.png"
         },
         "configuration": "./language-configuration.json"
       }
