@@ -22,7 +22,7 @@
       "match": "\\b(func)\\s+([a-zA-Z_][a-zA-Z0-9_]*)\\s*\\|",
       "captures": {
         "1": { "name": "keyword.other.zekken" },
-        "2": { "name": "entity.name.function.zekken" }
+        "2": { "name": "entity.name.function.call.zekken" }
       }
     },
 
@@ -31,7 +31,7 @@
       "match": "\\b(let|const)\\s+([a-zA-Z_][a-zA-Z0-9_]*)\\s*:\\s+([a-zA-Z_][a-zA-Z0-9_]*)\\s*->",
       "captures": {
         "1": { "name": "keyword.other.zekken" },
-        "2": { "name": "entity.name.function.zekken" },
+        "2": { "name": "entity.name.function.call.zekken" },
         "3": { "name": "storage.type.zekken support.type.primitive.zekken" }
       }
     },
@@ -48,8 +48,38 @@
       "name": "meta.function.call.zekken",
       "match": "\\b([a-zA-Z_][a-zA-Z0-9_]*)\\s*(=>)",
       "captures": {
-        "1": { "name": "entity.name.function.zekken" },
+        "1": { "name": "entity.name.function.call.zekken" },
         "2": { "name": "keyword.operator.zekken" }
+      }
+    },
+
+    {
+      "name": "meta.member.method.call.zekken",
+      "match": "\\b([a-zA-Z_][a-zA-Z0-9_]*)(\\.)\\s*([a-zA-Z_][a-zA-Z0-9_]*)(?=\\s*=>)",
+      "captures": {
+        "1": { "name": "variable.other.object.zekken" },
+        "2": { "name": "punctuation.accessor.zekken" },
+        "3": { "name": "entity.name.function.call.zekken" }
+      }
+    },
+
+    {
+      "name": "meta.member.constant.access.zekken",
+      "match": "\\b(math)(\\.)\\s*(PI|E|I)\\b",
+      "captures": {
+        "1": { "name": "variable.other.object.zekken" },
+        "2": { "name": "punctuation.accessor.zekken" },
+        "3": { "name": "variable.other.property.zekken" }
+      }
+    },
+
+    {
+      "name": "meta.member.access.zekken",
+      "match": "\\b([a-zA-Z_][a-zA-Z0-9_]*)(\\.)\\s*([a-zA-Z_][a-zA-Z0-9_]*)\\b(?!\\s*=>)",
+      "captures": {
+        "1": { "name": "variable.other.object.zekken" },
+        "2": { "name": "punctuation.accessor.zekken" },
+        "3": { "name": "variable.other.property.zekken" }
       }
     },
 
@@ -86,7 +116,9 @@
       "begin": "\"",
       "end": "\"",
       "patterns": [
-        { "name": "constant.character.escape.zekken", "match": "\\\\[abfnrtv0'\"\\\\]" }
+        { "name": "constant.character.escape.zekken", "match": "\\\\[abfnrtv0'\"\\\\]" },
+        { "name": "constant.other.placeholder.empty.zekken", "match": "\\{\\}" },
+        { "name": "variable.other.interpolation.zekken", "match": "\\{[a-zA-Z_][a-zA-Z0-9_]*\\}" }
       ]
     },
     {
@@ -94,7 +126,9 @@
       "begin": "'",
       "end": "'",
       "patterns": [
-        { "name": "constant.character.escape.zekken", "match": "\\\\[abfnrtv0'\"\\\\]" }
+        { "name": "constant.character.escape.zekken", "match": "\\\\[abfnrtv0'\"\\\\]" },
+        { "name": "constant.other.placeholder.empty.zekken", "match": "\\{\\}" },
+        { "name": "variable.other.interpolation.zekken", "match": "\\{[a-zA-Z_][a-zA-Z0-9_]*\\}" }
       ]
     },
 
@@ -140,7 +174,9 @@
           "begin": "\"",
           "end": "\"",
           "patterns": [
-            { "name": "constant.character.escape.zekken", "match": "\\\\[abfnrtv0'\"\\\\]" }
+            { "name": "constant.character.escape.zekken", "match": "\\\\[abfnrtv0'\"\\\\]" },
+            { "name": "constant.other.placeholder.empty.zekken", "match": "\\{\\}" },
+            { "name": "variable.other.interpolation.zekken", "match": "\\{[a-zA-Z_][a-zA-Z0-9_]*\\}" }
           ]
         },
         {
@@ -148,7 +184,9 @@
           "begin": "'",
           "end": "'",
           "patterns": [
-            { "name": "constant.character.escape.zekken", "match": "\\\\[abfnrtv0'\"\\\\]" }
+            { "name": "constant.character.escape.zekken", "match": "\\\\[abfnrtv0'\"\\\\]" },
+            { "name": "constant.other.placeholder.empty.zekken", "match": "\\{\\}" },
+            { "name": "variable.other.interpolation.zekken", "match": "\\{[a-zA-Z_][a-zA-Z0-9_]*\\}" }
           ]
         }
       ]
@@ -179,6 +217,33 @@
         },
         { "include": "#function-patterns" },
         {
+          "name": "meta.member.method.call.zekken",
+          "match": "\\b([a-zA-Z_][a-zA-Z0-9_]*)(\\.)\\s*([a-zA-Z_][a-zA-Z0-9_]*)(?=\\s*=>)",
+          "captures": {
+            "1": { "name": "variable.other.object.zekken" },
+            "2": { "name": "punctuation.accessor.zekken" },
+            "3": { "name": "entity.name.function.call.zekken" }
+          }
+        },
+        {
+          "name": "meta.member.constant.access.zekken",
+          "match": "\\b(math)(\\.)\\s*(PI|E|I)\\b",
+          "captures": {
+            "1": { "name": "variable.other.object.zekken" },
+            "2": { "name": "punctuation.accessor.zekken" },
+            "3": { "name": "variable.other.property.zekken" }
+          }
+        },
+        {
+          "name": "meta.member.access.zekken",
+          "match": "\\b([a-zA-Z_][a-zA-Z0-9_]*)(\\.)\\s*([a-zA-Z_][a-zA-Z0-9_]*)\\b(?!\\s*=>)",
+          "captures": {
+            "1": { "name": "variable.other.object.zekken" },
+            "2": { "name": "punctuation.accessor.zekken" },
+            "3": { "name": "variable.other.property.zekken" }
+          }
+        },
+        {
           "name": "keyword.control.zekken",
           "match": "\\b(if|else|for|while|try|catch|return)\\b"
         },
@@ -207,7 +272,9 @@
           "begin": "\"",
           "end": "\"",
           "patterns": [
-            { "name": "constant.character.escape.zekken", "match": "\\\\[abfnrtv0'\"\\\\]" }
+            { "name": "constant.character.escape.zekken", "match": "\\\\[abfnrtv0'\"\\\\]" },
+            { "name": "constant.other.placeholder.empty.zekken", "match": "\\{\\}" },
+            { "name": "variable.other.interpolation.zekken", "match": "\\{[a-zA-Z_][a-zA-Z0-9_]*\\}" }
           ]
         },
         {
@@ -215,7 +282,9 @@
           "begin": "'",
           "end": "'",
           "patterns": [
-            { "name": "constant.character.escape.zekken", "match": "\\\\[abfnrtv0'\"\\\\]" }
+            { "name": "constant.character.escape.zekken", "match": "\\\\[abfnrtv0'\"\\\\]" },
+            { "name": "constant.other.placeholder.empty.zekken", "match": "\\{\\}" },
+            { "name": "variable.other.interpolation.zekken", "match": "\\{[a-zA-Z_][a-zA-Z0-9_]*\\}" }
           ]
         },
         { "include": "#key-value-pair" },
@@ -240,7 +309,9 @@
           "begin": "\"",
           "end": "\"",
           "patterns": [
-            { "name": "constant.character.escape.zekken", "match": "\\\\[abfnrtv0'\"\\\\]" }
+            { "name": "constant.character.escape.zekken", "match": "\\\\[abfnrtv0'\"\\\\]" },
+            { "name": "constant.other.placeholder.empty.zekken", "match": "\\{\\}" },
+            { "name": "variable.other.interpolation.zekken", "match": "\\{[a-zA-Z_][a-zA-Z0-9_]*\\}" }
           ]
         },
         {
@@ -248,7 +319,9 @@
           "begin": "'",
           "end": "'",
           "patterns": [
-            { "name": "constant.character.escape.zekken", "match": "\\\\[abfnrtv0'\"\\\\]" }
+            { "name": "constant.character.escape.zekken", "match": "\\\\[abfnrtv0'\"\\\\]" },
+            { "name": "constant.other.placeholder.empty.zekken", "match": "\\{\\}" },
+            { "name": "variable.other.interpolation.zekken", "match": "\\{[a-zA-Z_][a-zA-Z0-9_]*\\}" }
           ]
         }
       ]
@@ -295,7 +368,9 @@
           "begin": "\"",
           "end": "\"",
           "patterns": [
-            { "name": "constant.character.escape.zekken", "match": "\\\\[abfnrtv0'\"\\\\]" }
+            { "name": "constant.character.escape.zekken", "match": "\\\\[abfnrtv0'\"\\\\]" },
+            { "name": "constant.other.placeholder.empty.zekken", "match": "\\{\\}" },
+            { "name": "variable.other.interpolation.zekken", "match": "\\{[a-zA-Z_][a-zA-Z0-9_]*\\}" }
           ]
         },
         {
@@ -303,7 +378,9 @@
           "begin": "'",
           "end": "'",
           "patterns": [
-            { "name": "constant.character.escape.zekken", "match": "\\\\[abfnrtv0'\"\\\\]" }
+            { "name": "constant.character.escape.zekken", "match": "\\\\[abfnrtv0'\"\\\\]" },
+            { "name": "constant.other.placeholder.empty.zekken", "match": "\\{\\}" },
+            { "name": "variable.other.interpolation.zekken", "match": "\\{[a-zA-Z_][a-zA-Z0-9_]*\\}" }
           ]
         }
       ]
@@ -315,7 +392,7 @@
           "match": "\\b(func)\\s+([a-zA-Z_][a-zA-Z0-9_]*)\\s*\\|",
           "captures": {
             "1": { "name": "keyword.other.zekken" },
-            "2": { "name": "entity.name.function.zekken" }
+            "2": { "name": "entity.name.function.call.zekken" }
           }
         },
 
@@ -324,7 +401,7 @@
           "match": "\\b(let|const)\\s+([a-zA-Z_][a-zA-Z0-9_]*)\\s*:\\s+([a-zA-Z_][a-zA-Z0-9_]*)\\s*->",
           "captures": {
             "1": { "name": "keyword.other.zekken" },
-            "2": { "name": "entity.name.function.zekken" },
+            "2": { "name": "entity.name.function.call.zekken" },
             "3": { "name": "support.type.primitive.zekken" }
           }
         },
@@ -341,7 +418,7 @@
           "name": "meta.function.call.zekken",
           "match": "\\b([a-zA-Z_][a-zA-Z0-9_]*)\\s*(=>)",
           "captures": {
-            "1": { "name": "entity.name.function.zekken" },
+            "1": { "name": "entity.name.function.call.zekken" },
             "2": { "name": "keyword.operator.zekken" }
           }
         }

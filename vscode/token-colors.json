@@ -67,6 +67,49 @@
     },
 
     {
+      "scope": "variable.other.object.zekken",
+      "settings": {
+        "foreground": "#9CDCFE"
+      }
+    },
+
+    {
+      "scope": "variable.other.property.zekken",
+      "settings": {
+        "foreground": "#FFB86C"
+      }
+    },
+
+    {
+      "scope": "support.variable.property.zekken",
+      "settings": {
+        "foreground": "#FFB86C"
+      }
+    },
+
+    {
+      "scope": "constant.language.zekken",
+      "settings": {
+        "foreground": "#E5C07B"
+      }
+    },
+
+    {
+      "scope": "meta.member.access.zekken variable.other.property.zekken",
+      "settings": {
+        "foreground": "#FFB86C",
+        "fontStyle": "bold"
+      }
+    },
+
+    {
+      "scope": "punctuation.accessor.zekken",
+      "settings": {
+        "foreground": "#D4D4D4"
+      }
+    },
+
+    {
       "scope": [
         "storage.type.zekken",
         "support.type.primitive.zekken"
@@ -101,6 +144,22 @@
       "scope": "constant.character.escape.zekken",
       "settings": {
         "foreground": "#D7BA7D",
+        "fontStyle": "bold"
+      }
+    },
+
+    {
+      "scope": "constant.other.placeholder.empty.zekken",
+      "settings": {
+        "foreground": "#FFD700",
+        "fontStyle": "bold"
+      }
+    },
+
+    {
+      "scope": "variable.other.interpolation.zekken",
+      "settings": {
+        "foreground": "#4FC1FF",
         "fontStyle": "bold"
       }
     },

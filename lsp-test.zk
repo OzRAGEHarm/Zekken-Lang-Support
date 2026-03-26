@@ -1,0 +1,88 @@
+// Zekken LSP diagnostics stress test file.
+// This file is intentionally broken to validate Errors/Warnings coverage.
+
+use invalid_lib; // Error: Unknown library 'invalid_lib'
+use { read_file, fake_member } from fs; // Error: Unknown member 'fake_member' in library 'fs'
+
+let missing_semicolon: int = 45 // Error: Missing semicolon
+let missing_type = 45; // Error: Missing explicit type annotation
+let empty_type: = "hello"; // Error: Missing type after ':'
+let missing_value: string = ; // Error: Missing declaration value
+let wrong_type: int = 3.14; // Error: Type mismatch (int <- float)
+
+const lock: int = 1;
+lock = 2; // Error: Cannot reassign const and semicolon not supported
+
+@ // Error: Expected built-in name after '@'
+@println // Error: Missing '=> |...|'
+@println hello // Error: Invalid built-in call syntax
+@unknown => |"x"| // Error: Unknown built-in '@unknown'
+@println => // Error: Incomplete call, missing '|...|'
+@println => "x" // Error: Expected pipe-delimited args after '=>'
+
+if { // Error: Missing if condition
+  @println => |"bad if"|
+}
+
+else if { // Error: Missing else-if condition
+  @println => |"bad else-if"|
+}
+
+else bad { // Error: Invalid else syntax
+  @println => |"bad else"|
+}
+
+while { // Error: Missing while condition
+  @println => |"bad while"|
+}
+
+for item in nums { // Error: Invalid for syntax; expected `for |item| in source {` and undefined symbol nums
+  @println => |item| // Error: `item` may be undefined because loop header is invalid
+}
+
+func bad_decl a: int, b: int { // Error: Missing parameter pipes `|...|`
+  return a + b; // Error: Return outside valid function context (due to invalid declaration)
+}
+
+try bad { // Error: Invalid try syntax; expected `try {`
+  @println => |"bad try"| // Error likely paired with invalid try block
+}
+
+catch e { // Error: Invalid catch syntax; expected `catch |err| {`
+  @println => |e| // Error: Undefined symbol `e` (invalid catch binding)
+}
+
+let cast_bad: int = 9.cast => |"str"|; // Error: Unsupported cast target 'str'
+let undef_from_expr: int = not_defined + 2; // Error: Undefined symbol `not_defined`
+let call_undef: int = add_missing => |1, 2|; // Error: Undefined function/symbol `add_missing`
+let bad_member: int = math.NotReal => |2|; // Error: Unknown math member `NotReal`
+
+let open_arr: arr = [1, 2, 3; // Error: Unmatched '['
+
+let unknown_t: number = 42; // Error: Unknown type `number`
+func returns_weird |x: int| -> number { // Error: Unknown return type `number`
+  return x;
+}
+func param_bad |x: thing| { // Error: Unknown parameter type `thing`
+  return x;
+}
+
+let dup: int = 1;
+let dup: int = 2; // Warning: Duplicate declaration `dup`
+func dup_fn |a: int| {
+  return a;
+}
+func dup_fn |a: int, b: int| { // Warning: Duplicate declaration `dup_fn`
+  return a + b;
+}
+
+let reassigned: int = 10;
+reassigned = "oops"; // Error: Assignment type mismatch (int <- string)
+
+return 123; // Error: Return outside function
+
+func add_ok |a: int, b: int| {
+  return a + b;
+}
+let arity_bad_1: int = add_ok => |1|; // Error: Arity mismatch (expected 2 args)
+let arity_bad_2: int = add_ok => |1, 2, 3|; // Error: Arity mismatch (expected 2 args)

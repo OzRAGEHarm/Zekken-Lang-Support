@@ -2,7 +2,7 @@
   "name": "zekken-language-support",
   "displayName": "Zekken Language Support",
   "description": "Zekken Language Support for Visual Studio Code",
-  "version": "0.0.8",
+  "version": "1.0.0",
   "publisher": "OzRAGEHarm",
   "license": "MIT",
   "repository": {
@@ -16,6 +16,13 @@
   "engines": {
     "vscode": "^1.90.0"
   },
+  "main": "./extension.js",
+  "extensionKind": [
+    "workspace"
+  ],
+  "activationEvents": [
+    "onLanguage:zekken"
+  ],
   "categories": [
     "Programming Languages"
   ],
@@ -45,22 +52,45 @@
         "path": "./syntaxes/zekken.tmLanguage.json"
       }
     ],
-    "configuration": [
-      {
-        "properties": {
-          "tokenColors": {
-            "properties": {
-              "path": "token-colors.json"
+    "configurationDefaults": {
+      "[zekken]": {
+        "editor.semanticHighlighting.enabled": false
+      },
+      "editor.tokenColorCustomizations": {
+        "textMateRules": [
+          {
+            "scope": "entity.name.function.call.zekken",
+            "settings": {
+              "foreground": "#DCDCAA"
+            }
+          },
+          {
+            "scope": "variable.other.property.zekken",
+            "settings": {
+              "foreground": "#FFB86C"
+            }
+          },
+          {
+            "scope": "punctuation.accessor.zekken",
+            "settings": {
+              "foreground": "#D4D4D4"
             }
           }
-        }
+        ]
       }
-    ]
+    }
   },
-  "devDependencies": {
-    "vscode-languageserver": "^9.0.1"
+  "devDependencies": {},
+  "dependencies": {
+    "vscode-languageclient": "^9.0.1",
+    "vscode-languageserver": "^9.0.1",
+    "vscode-languageserver-textdocument": "^1.0.11"
   },
   "scripts": {
-    "build": "vsce package --out ./dist"
+    "build:linux": "bash ./build-vsix.sh",
+    "build:win": ".\\build-vsix.bat",
+    "build": "bash ./build-vsix.sh",
+    "build:vsix": "bash ./build-vsix.sh",
+    "build:vsix:win": ".\\build-vsix.bat"
   }
 }
