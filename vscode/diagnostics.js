@@ -33,6 +33,9 @@ function computeDiagnostics(text, completionData, options = {}) {
   checkDuplicateDeclarations(lines, maskedLines, diagnostics);
   checkReturnOutsideFunction(lines, diagnostics);
   checkMissingSemicolonInLetLexed(lexed, diagnostics);
+  // Fallback string-based semicolon check to catch edge cases like trailing `//` comments.
+  // (Tokenization can sometimes miss statement boundaries depending on masking.)
+  checkMissingSemicolonInLet(lines, diagnostics);
   checkMissingSemicolonOnReturn(lines, diagnostics);
   checkUnbalancedPairs(maskedLines, diagnostics);
   checkIncompleteCallSyntax(lines, diagnostics);
