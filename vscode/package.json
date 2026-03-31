@@ -2,7 +2,7 @@
   "name": "zekken-language-support",
   "displayName": "Zekken Language Support",
   "description": "Zekken Language Support for Visual Studio Code",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "publisher": "OzRAGEHarm",
   "license": "MIT",
   "repository": {

@@ -29,11 +29,10 @@
     "at_builtins": [
       "println",
       "input",
+      "parse_json",
       "queue"
     ],
-    "global_functions": [
-      "parse_json"
-    ],
+    "global_functions": [],
     "libraries": [
       "math",
       "fs",

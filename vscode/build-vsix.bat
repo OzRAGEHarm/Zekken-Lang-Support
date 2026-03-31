@@ -14,7 +14,7 @@ if not exist dist mkdir dist
 for /f "usebackq delims=" %%i in (`node -p "require('./package.json').name"`) do set EXT_NAME=%%i
 for /f "usebackq delims=" %%i in (`node -p "require('./package.json').version"`) do set EXT_VERSION=%%i
 
-set OUT_FILE=dist\%EXT_NAME%-%EXT_VERSION%.vsix
+set OUT_FILE=..\dist\%EXT_NAME%-%EXT_VERSION%.vsix
 
 echo [VSIX] Packaging extension...
 echo [VSIX] Output: %OUT_FILE%

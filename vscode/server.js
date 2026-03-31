@@ -10,6 +10,7 @@ const { TextDocument } = require("vscode-languageserver-textdocument");
 const fs = require("fs");
 const path = require("path");
 const { computeDiagnostics, buildMaskedLines } = require("./diagnostics");
+const { lex } = require("./lexer");
 
 process.on("uncaughtException", (err) => {
   console.error("[zekken-lsp] uncaughtException:", err && err.stack ? err.stack : err);
@@ -30,7 +31,7 @@ const HOVER_SYMBOL_CACHE = new Map();
 // Type method completion (matches runtime in src/environment/mod.rs).
 const TYPE_METHODS = {
   string: ["length", "toUpper", "toLower", "trim", "split", "cast", "format"],
-  arr: ["length", "first", "last", "push", "pop", "shift", "unshift", "join", "cast", "format"],
+  arr: ["length", "first", "last", "push", "pop", "shift", "unshift", "join", "remove", "cast", "format"],
   obj: ["keys", "values", "entries", "hasKey", "get", "cast", "format"],
   int: ["isEven", "isOdd", "cast", "format"],
   float: ["round", "floor", "ceil", "isEven", "isOdd", "cast", "format"],
@@ -56,6 +57,7 @@ const METHOD_SNIPPETS = {
   shift: "shift => ||",
   unshift: "unshift => |$1|",
   join: "join => |$1|",
+  remove: "remove => |$1|",
   // Object
   keys: "keys => ||",
   values: "values => ||",
@@ -98,6 +100,11 @@ connection.onCompletion((params) => {
   const wordMatch = /([a-zA-Z_][a-zA-Z0-9_]*)$/.exec(prefix);
   const wordPrefix = wordMatch ? wordMatch[1] : "";
 
+  // Never suggest completions inside strings/comments (including multi-line block comments).
+  if (isInStringOrCommentAtPosition(text, params.position.line, params.position.character)) {
+    return [];
+  }
+
   // Built-ins typed with @ prefix (e.g. @pri -> @println => ||)
   const atMatch = /@([a-zA-Z_]*)$/.exec(prefix);
   if (atMatch) {
@@ -111,15 +118,20 @@ connection.onCompletion((params) => {
       label: `@${name}`,
       kind: CompletionItemKind.Function,
       detail: "built-in",
+      sortText: `1_${name}`,
       insertTextFormat: InsertTextFormat.Snippet,
       textEdit: {
         range,
         newText:
-          name === "input"
-            ? "@input => |\"$1\"|"
-            : name === "queue"
-              ? "@queue => ||"
-              : "@println => ||",
+          name === "println"
+            ? "@println => |$1|"
+            : name === "input"
+              ? "@input => |\"$1\"|"
+              : name === "queue"
+                ? "@queue => ||"
+                : name === "parse_json"
+                  ? "@parse_json => |$1|"
+                  : `@${name} => ||`,
       },
     }));
   }
@@ -140,6 +152,7 @@ connection.onCompletion((params) => {
           label: t,
           kind: CompletionItemKind.TypeParameter,
           detail: "type",
+          sortText: `0_${t}`,
           textEdit: { range, newText: t },
         }));
     }
@@ -158,6 +171,7 @@ connection.onCompletion((params) => {
         label: t,
         kind: CompletionItemKind.TypeParameter,
         detail: 'type',
+        sortText: `0_${t}`,
         textEdit: { range, newText: t },
       }));
   }
@@ -173,6 +187,7 @@ connection.onCompletion((params) => {
         label: lib,
         kind: CompletionItemKind.Module,
         detail: "library",
+        sortText: `0_${lib}`,
         textEdit: { range, newText: lib },
       }));
   }
@@ -194,6 +209,7 @@ connection.onCompletion((params) => {
           label: m,
           kind: CompletionItemKind.Method,
           detail: `${lib} member`,
+          sortText: `0_${m}`,
           textEdit: { range, newText: m },
         }));
     }
@@ -213,6 +229,7 @@ connection.onCompletion((params) => {
           label: m,
           kind: CompletionItemKind.Method,
           detail: `${lhs} member`,
+          sortText: `0_${m}`,
           insertTextFormat: InsertTextFormat.Snippet,
           textEdit: {
             range,
@@ -230,6 +247,7 @@ connection.onCompletion((params) => {
           label: m,
           kind: CompletionItemKind.Method,
           detail: "queue method",
+          sortText: `0_${m}`,
           insertTextFormat: InsertTextFormat.Snippet,
           textEdit: {
             range,
@@ -248,6 +266,7 @@ connection.onCompletion((params) => {
           label: m,
           kind: CompletionItemKind.Method,
           detail: `${t} method`,
+          sortText: `0_${m}`,
           insertTextFormat: InsertTextFormat.Snippet,
           textEdit: {
             range,
@@ -267,15 +286,39 @@ connection.onCompletion((params) => {
     return [];
   }
 
+  const linePrefixBeforeWord = lineText.slice(
+    0,
+    Math.max(0, params.position.character - wordPrefix.length),
+  );
+  const beforeTrim = linePrefixBeforeWord.trimEnd();
+  const stmtStart = beforeTrim === "" || beforeTrim.endsWith(";") || beforeTrim.endsWith("}");
+  const prevNonEmptyLine = (() => {
+    for (let l = params.position.line - 1; l >= 0; l--) {
+      const t = getLineAt(doc, l);
+      if (t.trim().length > 0) return t;
+    }
+    return "";
+  })();
+  const allowElse =
+    "else".startsWith(wordPrefix) &&
+    (linePrefixBeforeWord.trimEnd().endsWith("}") || prevNonEmptyLine.trimEnd().endsWith("}"));
+
   const items = [];
   const keywordSnippets = {
     func: "func ${1:name} |${2:args}| {\n  $0\n}",
+    if: "if ${1:condition} {\n  $0\n}",
+    "else": "else {\n  $0\n}",
+    for: "for |${1:i}| in ${2:iter} {\n  $0\n}",
+    while: "while ${1:condition} {\n  $0\n}",
+    try: "try {\n  $0\n} catch |err| {\n  @println => |err|\n}",
+    return: "return $1;",
   };
-  const add = (label, kind, detail, insertText) =>
+  const add = (label, kind, detail, insertText, sortText) =>
     items.push({
       label,
       kind,
       detail,
+      ...(sortText ? { sortText } : {}),
       ...(insertText
         ? {
             insertText,
@@ -286,20 +329,35 @@ connection.onCompletion((params) => {
 
   for (const kw of COMPLETION_DATA.keywords) {
     if (!wordPrefix || kw.startsWith(wordPrefix)) {
-      add(kw, CompletionItemKind.Keyword, "keyword", keywordSnippets[kw]);
+      // Reduce noise by only suggesting statement keywords at statement-start.
+      if (!stmtStart && kw !== "in") continue;
+      if (kw === "else" && !allowElse) continue;
+      add(kw, CompletionItemKind.Keyword, "keyword", keywordSnippets[kw], `8_${kw}`);
     }
   }
   for (const gf of COMPLETION_DATA.globalFunctions) {
     if (!wordPrefix || gf.startsWith(wordPrefix)) {
-      add(gf, CompletionItemKind.Function, "global function", `${gf} => |$1|`);
+      add(gf, CompletionItemKind.Function, "global function", null, `6_${gf}`);
     }
   }
-  for (const lib of COMPLETION_DATA.libraries) if (!wordPrefix || lib.startsWith(wordPrefix)) add(lib, CompletionItemKind.Module, "library");
+  for (const lib of COMPLETION_DATA.libraries) {
+    if (!wordPrefix || lib.startsWith(wordPrefix)) add(lib, CompletionItemKind.Module, "library", null, `7_${lib}`);
+  }
 
-  const vars = collectVariables(text);
-  const funcs = collectFunctions(text);
-  for (const name of vars) if (!wordPrefix || name.startsWith(wordPrefix)) add(name, CompletionItemKind.Variable, "variable");
-  for (const name of funcs) if (!wordPrefix || name.startsWith(wordPrefix)) add(name, CompletionItemKind.Function, "function", `${name} => |$1|`);
+  // Scope-aware symbols: prefer params/loop vars, then locals, then functions/imports.
+  const symbols = buildSymbolIndex(text, doc.uri);
+  const visible = collectVisibleSymbolsForLine(symbols, params.position.line, doc.uri);
+  for (const [name, entry] of visible) {
+    if (!wordPrefix || name.startsWith(wordPrefix)) {
+      const k = entry.kind;
+      if (k === "param") add(name, CompletionItemKind.Variable, "parameter", null, `1_${name}`);
+      else if (k === "loop") add(name, CompletionItemKind.Variable, "loop variable", null, `1_${name}`);
+      else if (k === "variable") add(name, CompletionItemKind.Variable, "variable", null, `2_${name}`);
+      else if (k === "function") add(name, CompletionItemKind.Function, "function", null, `3_${name}`);
+      else if (k === "imported") add(name, CompletionItemKind.Variable, "imported symbol", null, `4_${name}`);
+      else add(name, CompletionItemKind.Text, "symbol", null, `5_${name}`);
+    }
+  }
 
   return items;
 });
@@ -948,6 +1006,75 @@ function isInStringOrCommentAt(line, character) {
     if (commentIdx >= 0 && idx >= commentIdx) return true;
   }
   return inSingle || inDouble;
+}
+
+function isInStringOrCommentAtPosition(text, line, character) {
+  try {
+    const lexed = lex(text);
+    const tokens = (lexed && Array.isArray(lexed.tokens)) ? lexed.tokens : [];
+    for (const t of tokens) {
+      if (t.kind !== "String" && t.kind !== "SingleLineComment" && t.kind !== "MultiLineComment") continue;
+      if (positionInToken(t, line, character)) return true;
+    }
+    return false;
+  } catch {
+    // Fallback: line-local check (doesn't handle multi-line comments).
+    const lines = text.split(/\r?\n/);
+    return isInStringOrCommentAt(lines[line] || "", character);
+  }
+}
+
+function positionInToken(tok, line, character) {
+  if (!tok) return false;
+  const sL = tok.startLine ?? 0;
+  const sC = tok.startCol ?? 0;
+  const eL = tok.endLine ?? sL;
+  const eC = tok.endCol ?? sC;
+  if (line < sL || line > eL) return false;
+  if (line === sL && character < sC) return false;
+  if (line === eL && character >= eC) return false; // end is exclusive
+  return true;
+}
+
+function collectVisibleSymbolsForLine(symbols, lineNo, currentUri = "") {
+  const out = new Map();
+  if (!symbols) return out;
+
+  const scopes = symbols._scopes || [{ id: 0, parent: -1, startLine: 0, endLine: lineNo, depth: 0 }];
+  const lineScopeId = symbols._lineScopeId || [];
+  let sid = lineScopeId[lineNo] ?? 0;
+  const chain = new Set();
+  while (sid >= 0 && sid < scopes.length) {
+    chain.add(sid);
+    sid = scopes[sid].parent;
+  }
+
+  for (const [name, entries] of symbols.entries()) {
+    // entries are only stored for real symbol keys
+    if (!Array.isArray(entries)) continue;
+
+    const localEntries = entries.filter((e) => (e.sourceUri || "") === (currentUri || ""));
+    const candidates = localEntries.filter((e) => {
+      if (!chain.has(e.scopeId ?? 0)) return false;
+      if (typeof e.line === "number" && e.line > lineNo) return false;
+      return true;
+    });
+    if (candidates.length === 0) continue;
+
+    let best = null;
+    for (const e of candidates) {
+      if (!best) { best = e; continue; }
+      const d = e.scopeDepth ?? 0;
+      const bd = best.scopeDepth ?? 0;
+      if (d > bd) { best = e; continue; }
+      if (d === bd) {
+        if (e.line > best.line || (e.line === best.line && e.character > best.character)) best = e;
+      }
+    }
+    if (best) out.set(name, best);
+  }
+
+  return out;
 }
 
 function hover(title, body) {

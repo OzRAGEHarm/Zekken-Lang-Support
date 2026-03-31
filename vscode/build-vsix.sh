@@ -9,11 +9,9 @@ if ! command -v node >/dev/null 2>&1; then
   exit 1
 fi
 
-mkdir -p dist
-
 EXT_NAME="$(node -p "require('./package.json').name")"
 EXT_VERSION="$(node -p "require('./package.json').version")"
-OUT_FILE="dist/${EXT_NAME}-${EXT_VERSION}.vsix"
+OUT_FILE="../dist/${EXT_NAME}-${EXT_VERSION}.vsix"
 
 echo "[VSIX] Packaging extension..."
 echo "[VSIX] Output: ${OUT_FILE}"
